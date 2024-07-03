@@ -29,6 +29,7 @@ match platform:
         match target:
             case 'stable':
                 additional_flags = ['/O2', '/MT', '/EHsc']
+                env.Append(LINKFLAGS = ['/SUBSYSTEM:WINDOWS', '/entry:mainCRTStartup'],)
             case 'dev':
                 additional_flags =['/DEBUG', '/Od', '/MTd', '/EHsc']
         env.Append(
