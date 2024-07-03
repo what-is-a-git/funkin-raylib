@@ -10,19 +10,26 @@ int main(int argc, char **argv) {
     script_state *silly = script_new();
     script_run_file(silly, "assets/test.lua");
 
-    lua_Integer value = 40;
-    SCRIPT_ARGS call_dumb = script_args_init(script_arg_new(INT, &value));
-    script_call_args_void(silly, "bacon", call_dumb);
-
-    // script_args_dispose(call_dumb);
+    lua_Integer value = 1;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
-        
+
         ClearBackground(RAYWHITE);
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         
-        script_call_args_void(silly, "bacon", call_dumb);
+        value++;
+        if (value > 32) {
+            value = 32;
+        }
+
+        for (int i = 0; i < 1024; i++) {
+            SCRIPT_ARGS call_dumb = script_args_init(script_arg_new(INT, &value));
+            script_call_args_void(silly, "bacon", call_dumb);
+            script_args_dispose(call_dumb);
+        }
+
+        DrawFPS(4, 4);
         EndDrawing();
     }
 

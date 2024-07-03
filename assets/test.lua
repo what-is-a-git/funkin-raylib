@@ -5,7 +5,8 @@ function madre()
 end
 
 function bacon(amount)
+    local ass = 0
     for i = 1, amount, 1 do
-        
+        ass = ass + (i * amount)
     end
 end
