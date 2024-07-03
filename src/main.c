@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1280, 720, "Friday Night Funkin'");
 
-    script_state *silly = script_new();
+    SCRIPT_STATE *silly = script_new();
 
     script_bind_func(silly, "loadTexture", donaldJTrump, 1);
     script_bind_func(silly, "unloadTexture", owoUwU, 1);

@@ -4,10 +4,6 @@
 #include "lua.h"
 #include "list.h"
 
-typedef struct {
-    lua_State *raw_state;
-} script_state;
-
 typedef enum {
     NIL,
     BOOL,
@@ -21,21 +17,22 @@ typedef struct {
     void *value;
 } script_arg;
 
+typedef lua_State SCRIPT_STATE;
 typedef int SCRIPT_ERROR;
 
-script_state *script_new(void);
-void script_dispose(script_state *state);
+SCRIPT_STATE *script_new(void);
+void script_dispose(SCRIPT_STATE *state);
 
-SCRIPT_ERROR script_run_string(script_state *state, const char *source);
-SCRIPT_ERROR script_run_file(script_state *state, const char *path);
+SCRIPT_ERROR script_run_string(SCRIPT_STATE *state, const char *source);
+SCRIPT_ERROR script_run_file(SCRIPT_STATE *state, const char *path);
 
-SCRIPT_ERROR script_call_empty_void(script_state *state, const char *func);
+SCRIPT_ERROR script_call_empty_void(SCRIPT_STATE *state, const char *func);
 
-SCRIPT_ERROR script_init_args(script_state *state, const char *func);
-SCRIPT_ERROR script_call_args_void(script_state *state, int arg_count);
+SCRIPT_ERROR script_init_args(SCRIPT_STATE *state, const char *func);
+SCRIPT_ERROR script_call_args_void(SCRIPT_STATE *state, int arg_count);
 
-void script_push_arg(script_state *state, script_arg arg);
+void script_push_arg(SCRIPT_STATE *state, script_arg arg);
 
-void script_bind_func(script_state *state, const char *name, lua_CFunction func, int arg_count);
+void script_bind_func(SCRIPT_STATE *state, const char *name, lua_CFunction func, int arg_count);
 
 #endif // !LUA_WRAPPER_H
