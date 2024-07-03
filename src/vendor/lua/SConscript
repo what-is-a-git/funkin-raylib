@@ -1,0 +1,4 @@
+Import('env')
+Import('build_target')
+
+env.Library('#/' + build_target + 'lua', Glob('*.c'))
