@@ -3,92 +3,12 @@
 
 #include <stdio.h>
 
-int fart = 0;
-int tart = 0;
-lua_Number poopy = 0.0;
-lua_Number myBalls = 1.0;
-const char *pleaseStopSRC = "Congrats! OwO!";
-
-int helloMario(lua_State *state) {
-    if (!lua_isnumber(state, 1)) {
-        return 0;
-    }
-
-    myBalls = lua_tonumber(state, 1);
-    return 0;
-}
-
-int yoMamaSoUgly(lua_State *state) {
-    if (!lua_isnumber(state, 1)) {
-        return 0;
-    }
-
-    poopy = lua_tonumber(state, 1);
-    return 0;
-}
-
-int yoMamaSoHair(lua_State *state) {
-    if (!lua_isnumber(state, 1)) {
-        return 0;
-    }
-
-    fart = lua_tonumber(state, 1);
-    return 0;
-}
-
-int yoMamaSoHairZ(lua_State *state) {
-    if (!lua_isnumber(state, 1)) {
-        return 0;
-    }
-
-    tart = lua_tonumber(state, 1);
-    return 0;
-}
-
-int yoMamaSoHairy(lua_State *state) {
-    if (!lua_isnumber(state, 1) || !lua_isnumber(state, 2)) {
-        return 0;
-    }
-
-    fart = lua_tonumber(state, 1);
-    tart = lua_tonumber(state, 2);
-    return 0;
-}
-
-int srtYouHaveRagingAutism(lua_State *state) {
-    if (!lua_isstring(state, 1)) {
-        return 0;
-    }
-
-    pleaseStopSRC = lua_tostring(state, 1);
-    return 0;
-}
-
 int iLoveEatingFlixel(lua_State *state) {
     if (!lua_isinteger(state, 1) || !lua_isinteger(state, 2)) {
         return 0;
     }
 
     DrawFPS(lua_tointeger(state, 1), lua_tointeger(state, 2));
-    return 0;
-}
-
-Texture2D phighting;
-
-int drawMyMyKrita(lua_State *state) {
-    if (!lua_isnumber(state, 1) || !lua_isinteger(state, 2)) {
-        DrawTexturePro(phighting, (Rectangle) {0, 0, phighting.width, phighting.height},
-            (Rectangle) {fart, tart, phighting.width * myBalls, phighting.height * myBalls},
-            (Vector2) {phighting.width * myBalls / 2.0, phighting.height * myBalls / 2.0}, poopy, WHITE);
-        return 0;
-    }
-
-    int offX = lua_tonumber(state, 1);
-    int offY = lua_tonumber(state, 2);
-
-    DrawTexturePro(phighting, (Rectangle) {0, 0, phighting.width, phighting.height},
-            (Rectangle) {fart + offX, tart + offY, phighting.width * myBalls, phighting.height * myBalls},
-            (Vector2) {phighting.width * myBalls / 2.0, phighting.height * myBalls / 2.0}, poopy, WHITE);
     return 0;
 }
 
@@ -115,37 +35,144 @@ int heheILikeCheese(lua_State *state) {
     x = lua_tointeger(state, 2);
     y = lua_tointeger(state, 3);
     s = lua_tointeger(state, 4);
-    DrawText(text, x, y, s, LIGHTGRAY);
+
+    Color color = BLACK;
+
+    if (lua_istable(state, 5) && lua_rawlen(state, 5) >= 3) {
+        lua_rawgeti(state, 5, 1);
+        lua_Integer r = lua_tointeger(state, -1);
+        lua_pop(state, 1);
+
+        lua_rawgeti(state, 5, 2);
+        lua_Integer g = lua_tointeger(state, -1);
+        lua_pop(state, 1);
+
+        lua_rawgeti(state, 5, 3);
+        lua_Integer b = lua_tointeger(state, -1);
+        lua_pop(state, 1);
+
+        color = (Color) {r, g, b, 255};
+    }
+
+    DrawText(text, x, y, s, color);
     return 0;
 }
 
-int pleaseBro(lua_State *state) {
-    lua_pushstring(state, pleaseStopSRC);
+int donaldJTrump(lua_State *state) {
+    if (!lua_isstring(state, 1)) {
+        lua_pushnil(state);
+        return 1;
+    }
+
+    const char *path = lua_tostring(state, 1);
+    Texture2D tex = LoadTexture(path);
+
+    lua_createtable(state, 0, 5);
+
+    lua_pushinteger(state, tex.id);
+    lua_setfield(state, -2, "id");
+
+    lua_pushinteger(state, tex.width);
+    lua_setfield(state, -2, "width");
+
+    lua_pushinteger(state, tex.height);
+    lua_setfield(state, -2, "height");
+
+    lua_pushinteger(state, tex.mipmaps);
+    lua_setfield(state, -2, "mipmaps");
+
+    lua_pushinteger(state, tex.format);
+    lua_setfield(state, -2, "format");
+
     return 1;
 }
 
+int owoUwU(lua_State *state) {
+    if (!lua_istable(state, 1)) {
+        return 0;
+    }
+
+    lua_getfield(state, -1, "id");
+    lua_Integer id = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "width");
+    lua_Integer width = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "height");
+    lua_Integer height = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "mipmaps");
+    lua_Integer mipmaps = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "format");
+    lua_Integer format = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    UnloadTexture((Texture2D) {
+        (unsigned int) id,
+        width, height,
+        mipmaps, format
+    });
+
+    return 0;
+}
+
+int ohILoveGimp(lua_State *state) {
+    if (!lua_istable(state, 1) || !lua_isnumber(state, 2) || !lua_isnumber(state, 3) || !lua_isnumber(state, 4) || !lua_isnumber(state, 5)) {
+        return 0;
+    }
+
+    lua_Number x = lua_tonumber(state, -4);
+    lua_Number y = lua_tonumber(state, -3);
+    lua_Number s = lua_tonumber(state, -2);
+    lua_Number r = lua_tonumber(state, -1);
+
+    lua_settop(state, 1);
+
+    lua_getfield(state, -1, "id");
+    lua_Integer id = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+    
+    lua_getfield(state, -1, "width");
+    lua_Integer width = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "height");
+    lua_Integer height = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "mipmaps");
+    lua_Integer mipmaps = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    lua_getfield(state, -1, "format");
+    lua_Integer format = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+
+    DrawTexturePro((Texture2D) {id, width, height, mipmaps, format}, (Rectangle) {0, 0, width, height},
+            (Rectangle) {x, y, width * s, height * s}, (Vector2) {width / 2.0, height / 2.0}, r, WHITE);
+
+    return 0;
+}
+
 int main(int argc, char **argv) {
-    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1280, 720, "Friday Night Funkin'");
 
     script_state *silly = script_new();
-    script_bind_func(silly, "setX", yoMamaSoHair, 1);
-    script_bind_func(silly, "setY", yoMamaSoHairZ, 1);
-    script_bind_func(silly, "setScale", helloMario, 1);
-    script_bind_func(silly, "setAngle", yoMamaSoUgly, 1);
-    script_bind_func(silly, "setPosition", yoMamaSoHairy, 1);
-    script_bind_func(silly, "getText", pleaseBro, 0);
-    script_bind_func(silly, "setText", srtYouHaveRagingAutism, 2);
+
+    script_bind_func(silly, "loadTexture", donaldJTrump, 1);
+    script_bind_func(silly, "unloadTexture", owoUwU, 1);
+    script_bind_func(silly, "clearScreen", ohEmGeeGodotIsThatYou, 3);
+    script_bind_func(silly, "drawTexture", ohILoveGimp, 5);
+    script_bind_func(silly, "drawText", heheILikeCheese, 4);
     script_bind_func(silly, "drawFPS", iLoveEatingFlixel, 2);
-    script_bind_func(silly, "drawPhighterBabyUwU", drawMyMyKrita, 2);
-    script_bind_func(silly, "clearTheScreenOfFlies", ohEmGeeGodotIsThatYou, 3);
-    script_bind_func(silly, "drawMyBeautifulText", heheILikeCheese, 4);
 
-    
-
-    script_run_file(silly, "assets/test.lua");
-
-    phighting = LoadTexture("assets/peak.png");
+    script_run_file(silly, "assets/scene.lua");
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -162,7 +189,6 @@ int main(int argc, char **argv) {
 
     script_call_empty_void(silly, "madre");
     script_dispose(silly);
-    UnloadTexture(phighting);
     CloseWindow();
 
     return 0;
