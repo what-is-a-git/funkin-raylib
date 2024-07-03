@@ -27,6 +27,24 @@ int yoMamaSoUgly(lua_State *state) {
     return 0;
 }
 
+int yoMamaSoHair(lua_State *state) {
+    if (!lua_isnumber(state, 1)) {
+        return 0;
+    }
+
+    fart = lua_tonumber(state, 1);
+    return 0;
+}
+
+int yoMamaSoHairZ(lua_State *state) {
+    if (!lua_isnumber(state, 1)) {
+        return 0;
+    }
+
+    tart = lua_tonumber(state, 1);
+    return 0;
+}
+
 int yoMamaSoHairy(lua_State *state) {
     if (!lua_isnumber(state, 1) || !lua_isnumber(state, 2)) {
         return 0;
@@ -108,18 +126,23 @@ int pleaseBro(lua_State *state) {
 
 int main(int argc, char **argv) {
     // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(800, 450, "Friday Night Funkin'");
+    InitWindow(1280, 720, "Friday Night Funkin'");
 
     script_state *silly = script_new();
+    script_bind_func(silly, "setX", yoMamaSoHair, 1);
+    script_bind_func(silly, "setY", yoMamaSoHairZ, 1);
     script_bind_func(silly, "setScale", helloMario, 1);
     script_bind_func(silly, "setAngle", yoMamaSoUgly, 1);
-    script_bind_func(silly, "setPosition", yoMamaSoHairy, 2);
+    script_bind_func(silly, "setPosition", yoMamaSoHairy, 1);
     script_bind_func(silly, "getText", pleaseBro, 0);
     script_bind_func(silly, "setText", srtYouHaveRagingAutism, 2);
     script_bind_func(silly, "drawFPS", iLoveEatingFlixel, 2);
     script_bind_func(silly, "drawPhighterBabyUwU", drawMyMyKrita, 2);
     script_bind_func(silly, "clearTheScreenOfFlies", ohEmGeeGodotIsThatYou, 3);
     script_bind_func(silly, "drawMyBeautifulText", heheILikeCheese, 4);
+
+    
+
     script_run_file(silly, "assets/test.lua");
 
     phighting = LoadTexture("assets/peak.png");
@@ -133,7 +156,7 @@ int main(int argc, char **argv) {
         script_call_args_void(silly, 1);
 
         script_call_empty_void(silly, "draw");
-        
+
         EndDrawing();
     }
 
