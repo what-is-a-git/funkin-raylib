@@ -24,9 +24,8 @@ int main(int argc, char **argv) {
         }
 
         for (int i = 0; i < 1024; i++) {
-            SCRIPT_ARGS call_dumb = script_args_init(script_arg_new(INT, &value));
-            script_call_args_void(silly, "bacon", call_dumb);
-            script_args_dispose(call_dumb);
+            script_push_arg(silly, (script_arg) {INT, &value});
+            script_call_args_void(silly, "bacon", call_dumb, 1);
         }
 
         DrawFPS(4, 4);
