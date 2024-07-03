@@ -30,8 +30,12 @@ SCRIPT_ERROR script_run_string(script_state *state, const char *source);
 SCRIPT_ERROR script_run_file(script_state *state, const char *path);
 
 SCRIPT_ERROR script_call_empty_void(script_state *state, const char *func);
-SCRIPT_ERROR script_call_args_void(script_state *state, const char *func, int arg_count);
 
-void script_push_arg(script_state *state, script_arg *arg);
+SCRIPT_ERROR script_init_args(script_state *state, const char *func);
+SCRIPT_ERROR script_call_args_void(script_state *state, int arg_count);
+
+void script_push_arg(script_state *state, script_arg arg);
+
+void script_bind_func(script_state *state, const char *name, lua_CFunction func, int arg_count);
 
 #endif // !LUA_WRAPPER_H

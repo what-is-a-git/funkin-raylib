@@ -28,9 +28,8 @@ SCRIPT_ERROR script_call_empty_void(script_state *state, const char *func) {
     return lua_pcall(state->raw_state, 0, 0, 0);
 }
 
-SCRIPT_ERROR script_call_args_void(script_state *state, const char *func, int arg_count) {
+SCRIPT_ERROR script_init_args(script_state *state, const char *func) {
     lua_getglobal(state->raw_state, func);
-    return lua_pcall(state->raw_state, arg_count, 0, 0);
 }
 
 void script_push_arg(script_state *state, script_arg arg) {
@@ -51,4 +50,17 @@ void script_push_arg(script_state *state, script_arg arg) {
             lua_pushstring(state->raw_state, (const char*)arg.value);
             break;
     }
+}
+
+SCRIPT_ERROR script_call_args_void(script_state *state, int arg_count) {
+    return lua_pcall(state->raw_state, arg_count, 0, 0);
+}
+
+void script_bind_func(script_state *state, const char *name, lua_CFunction func, int arg_count) {
+    for (int i = 0; i < arg_count; i++) {
+        lua_pushstring(state->raw_state, name);
+    }
+    
+    lua_pushcclosure(state->raw_state, func, arg_count);
+    lua_setglobal(state->raw_state, name);
 }
