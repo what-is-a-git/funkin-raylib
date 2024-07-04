@@ -2,7 +2,7 @@
 #define LUA_WRAPPER_H
 
 #include "lua.h"
-#include "list.h"
+#include "lauxlib.h"
 
 typedef enum {
     NIL,
@@ -34,5 +34,15 @@ SCRIPT_ERROR script_call_args_void(SCRIPT_STATE *state, int arg_count);
 void script_push_arg(SCRIPT_STATE *state, script_arg arg);
 
 void script_bind_func(SCRIPT_STATE *state, const char *name, lua_CFunction func, int arg_count);
+
+void script_table_new(SCRIPT_STATE *state, int size);
+
+void script_table_set_field_int(SCRIPT_STATE *state, const char *field, lua_Integer value, int index);
+lua_Integer script_table_get_field_int(SCRIPT_STATE *state, int table_index, const char *field);
+lua_Integer script_table_get_int(SCRIPT_STATE *state, int table_index, int item_index);
+
+void script_table_set_field_number(SCRIPT_STATE *state, const char *field, lua_Number value, int index);
+lua_Number script_table_get_field_number(SCRIPT_STATE *state, int table_index, const char *field);
+lua_Number script_table_get_number(SCRIPT_STATE *state, int table_index, int item_index);
 
 #endif // !LUA_WRAPPER_H

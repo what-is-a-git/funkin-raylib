@@ -1,7 +1,6 @@
 #include "lua_wrapper.h"
 
 #include <stdlib.h>
-#include "lauxlib.h"
 
 SCRIPT_STATE *script_new(void) {
     SCRIPT_STATE *state = luaL_newstate();
@@ -61,4 +60,50 @@ void script_bind_func(SCRIPT_STATE *state, const char *name, lua_CFunction func,
     
     lua_pushcclosure(state, func, arg_count);
     lua_setglobal(state, name);
+}
+
+void script_table_new(SCRIPT_STATE *state, int size) {
+    if (size > 0) {
+        lua_createtable(state, 0, size);
+    } else {
+        lua_newtable(state);
+    }
+}
+
+void script_table_set_field_int(SCRIPT_STATE *state, const char *field, lua_Integer value, int index) {
+    lua_pushinteger(state, value);
+    lua_setfield(state, index, field);
+}
+
+lua_Integer script_table_get_field_int(SCRIPT_STATE *state, int table_index, const char *field) {
+    lua_getfield(state, table_index, field);
+    lua_Integer x = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+    return x;
+}
+
+lua_Integer script_table_get_int(SCRIPT_STATE *state, int table_index, int item_index) {
+    lua_rawgeti(state, table_index, item_index);
+    lua_Integer x = lua_tointeger(state, -1);
+    lua_pop(state, 1);
+    return x;
+}
+
+void script_table_set_field_number(SCRIPT_STATE *state, const char *field, lua_Number value, int index) {
+    lua_pushnumber(state, value);
+    lua_setfield(state, index, field);
+}
+
+lua_Number script_table_get_field_number(SCRIPT_STATE *state, int table_index, const char *field) {
+    lua_getfield(state, table_index, field);
+    lua_Number x = lua_tonumber(state, -1);
+    lua_pop(state, 1);
+    return x;
+}
+
+lua_Number script_table_get_number(SCRIPT_STATE *state, int table_index, int item_index) {
+    lua_rawgeti(state, table_index, item_index);
+    lua_Number x = lua_tonumber(state, -1);
+    lua_pop(state, 1);
+    return x;
 }

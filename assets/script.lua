@@ -1,6 +1,6 @@
-print('hello lua')
+print('Hello, ' .. _G._VERSION .. '!')
 
-local tex = loadTexture('assets/test.png')
+local test = loadTexture('assets/test.png')
 local phighters = loadTexture('assets/peak.png')
 
 local timer = 0.0
@@ -8,10 +8,12 @@ local frame = 0
 local runs = 0
 
 function dispose()
-    print('unloading')
-    unloadTexture(tex)
+    print('UNLOADING: Begin')
+
+    unloadTexture(test)
     unloadTexture(phighters)
-    print('done unloading')
+
+    print('UNLOADING: Done')
 end
 
 
@@ -27,18 +29,18 @@ function update(elapsed)
 end
 
 function draw()
-    clearScreen(255, math.floor((timer % 2) * 255), 128)
+    clear()
 
     local xOffset = (timer * 60.0) % 250.0
     local yOffset = (timer * 60.0) % 250.0
 
     for x = 0, 6 do
         for y = 0, 4 do
-            drawTexture(tex, x * 250.0 - 250.0 + xOffset, y * 250.0 - 250.0 + yOffset, 1.0, 0.0)
+            drawTexture(test, x * 250.0 - 250.0 + xOffset, y * 250.0 - 250.0 + yOffset, 1.0, 0.0)
         end
     end
 
-    drawText(text, 640 - 240, 360 - 10, 20, {64, 128, 255})
+    drawText(text, 640 - 240, 360 - 10, 20, {(timer * 64.0) % 255.0, 128, 255})
 
     local scale = 0.25 + math.cos(timer * 12.0) * 0.1
     drawTexture(phighters, math.sin(timer * 3.0) * (640.0 * (1.0 - scale)) + 1280.0 - (640.0 * scale), 720.0 - (360.0 * scale), scale, 0)
