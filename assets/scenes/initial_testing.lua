@@ -58,8 +58,8 @@ end
 function free()
     print('UNLOADING: Begin')
 
-    unloadTexture(darnyIcon.texture)
-    unloadTexture(picoIcon.texture)
+    darnyIcon:free()
+    picoIcon:free()
 
     print('UNLOADING: Done')
 end

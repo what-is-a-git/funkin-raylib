@@ -33,16 +33,18 @@ int lua_DrawText(lua_State *state) {
     return 0;
 }
 
-int lua_UnloadTexture(lua_State *state) {
+int lua_Sprite_free(lua_State *state) {
     if (!lua_istable(state, 1)) {
         return 0;
     }
 
+    lua_getfield(state, 1, "texture");
     UnloadTexture((Texture2D) {
-        script_table_get_field_int(state, -1, "id"),
-        script_table_get_field_int(state, -1, "width"), script_table_get_field_int(state, -1, "height"),
-        script_table_get_field_int(state, -1, "mipmaps"), script_table_get_field_int(state, -1, "format")
+        script_table_get_field_int(state, 2, "id"),
+        script_table_get_field_int(state, 2, "width"), script_table_get_field_int(state, 2, "height"),
+        script_table_get_field_int(state, 2, "mipmaps"), script_table_get_field_int(state, 2, "format")
     });
+    lua_pop(state, 1);
     return 0;
 }
 
@@ -126,6 +128,10 @@ int lua_Sprite_new(lua_State *state) {
     lua_pushcclosure(state, lua_Sprite_draw, 1);
     lua_setfield(state, 2, "draw");
 
+    lua_pushnil(state);
+    lua_pushcclosure(state, lua_Sprite_free, 1);
+    lua_setfield(state, 2, "free");
+
     return 1;
 }
 
@@ -162,7 +168,6 @@ int frontend_assets_path(lua_State *state) {
 }
 
 void frontend_bind(SCRIPT_STATE *state) {
-    script_bind_func(state, "unloadTexture", lua_UnloadTexture, 1);
     script_bind_func(state, "clear", lua_ClearBackground, 3);
     script_bind_func(state, "drawText", lua_DrawText, 4);
     script_bind_func(state, "drawFPS", lua_DrawFPS, 2);

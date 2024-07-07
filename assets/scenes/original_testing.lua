@@ -60,8 +60,8 @@ end
 function free()
     print('UNLOADING: Begin')
 
-    unloadTexture(test.texture)
-    unloadTexture(phighters.texture)
+    test:free()
+    phighters:free()
 
     print('UNLOADING: Done')
 end
