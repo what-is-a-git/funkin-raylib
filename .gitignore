@@ -41,7 +41,6 @@ dkms.conf
 
 # Project Build System Specifics
 build/
-bin/
 compile_commands.json
 
 # SCons

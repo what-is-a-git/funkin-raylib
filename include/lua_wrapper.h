@@ -26,11 +26,14 @@ void script_dispose(SCRIPT_STATE *state);
 SCRIPT_ERROR script_run_string(SCRIPT_STATE *state, const char *source);
 SCRIPT_ERROR script_run_file(SCRIPT_STATE *state, const char *path);
 
-SCRIPT_ERROR script_call_empty_void(SCRIPT_STATE *state, const char *func);
+void script_call_empty_void(SCRIPT_STATE *state, const char *func);
 
 SCRIPT_ERROR script_init_args(SCRIPT_STATE *state, const char *func);
-SCRIPT_ERROR script_call_args_void(SCRIPT_STATE *state, int arg_count);
+void script_call_args_void(SCRIPT_STATE *state, int arg_count);
 
+void script_handle_errors(SCRIPT_STATE *state, SCRIPT_ERROR error);
+
+// IDEA: replace this with null terminated array of script_arg ?
 void script_push_arg(SCRIPT_STATE *state, script_arg arg);
 
 void script_bind_func(SCRIPT_STATE *state, const char *name, lua_CFunction func, int arg_count);

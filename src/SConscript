@@ -5,4 +5,5 @@ SConscript('vendor/SConscript')
 
 env.Object(target='main', source=['main.c'])
 env.Object(target='lua_wrapper', source=['lua_wrapper.c'])
-env.Object(target='list', source=['list.c'])
+env.Object(target='lua_frontend', source=['lua_frontend.c'])
+# env.Object(target='list', source=['list.c'])

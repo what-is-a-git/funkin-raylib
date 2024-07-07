@@ -21,8 +21,8 @@ env = Environment(
 )
 
 platform = env['PLATFORM']
-bin_target = 'bin/' + platform + '/' + target + '/'
-build_target = 'build/' + platform + '/' + target + '/'
+bin_target = 'build/' + target + '/' + platform + '/bin/'
+build_target = 'build/' + target + '/' + platform + '/obj/'
 
 match platform:
     case 'win32': # Windows

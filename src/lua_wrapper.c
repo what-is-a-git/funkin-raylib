@@ -1,6 +1,7 @@
 #include "lua_wrapper.h"
 
 #include <stdlib.h>
+#include "log.h"
 
 SCRIPT_STATE *script_new(void) {
     SCRIPT_STATE *state = luaL_newstate();
@@ -20,9 +21,9 @@ SCRIPT_ERROR script_run_file(SCRIPT_STATE *state, const char *path) {
     return luaL_dofile(state, path);
 }
 
-SCRIPT_ERROR script_call_empty_void(SCRIPT_STATE *state, const char *func) {
+void script_call_empty_void(SCRIPT_STATE *state, const char *func) {
     lua_getglobal(state, func);
-    return lua_pcall(state, 0, 0, 0);
+    script_handle_errors(state, lua_pcall(state, 0, 0, 0));
 }
 
 SCRIPT_ERROR script_init_args(SCRIPT_STATE *state, const char *func) {
@@ -49,8 +50,16 @@ void script_push_arg(SCRIPT_STATE *state, script_arg arg) {
     }
 }
 
-SCRIPT_ERROR script_call_args_void(SCRIPT_STATE *state, int arg_count) {
-    return lua_pcall(state, arg_count, 0, 0);
+void script_call_args_void(SCRIPT_STATE *state, int arg_count) {
+    script_handle_errors(state, lua_pcall(state, arg_count, 0, 0));
+}
+
+void script_handle_errors(SCRIPT_STATE *state, SCRIPT_ERROR error) {
+    if (error == LUA_OK) {
+        return;
+    }
+
+    error_fmt("%s", lua_tostring(state, -1));
 }
 
 void script_bind_func(SCRIPT_STATE *state, const char *name, lua_CFunction func, int arg_count) {
