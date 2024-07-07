@@ -23,7 +23,7 @@ SCRIPT_ERROR script_run_file(SCRIPT_STATE *state, const char *path) {
 
 void script_call_empty_void(SCRIPT_STATE *state, const char *func) {
     lua_getglobal(state, func);
-    script_handle_errors(state, lua_pcall(state, 0, 0, 0));
+    script_call_args_void(state, 0);
 }
 
 SCRIPT_ERROR script_init_args(SCRIPT_STATE *state, const char *func) {
@@ -51,6 +51,13 @@ void script_push_arg(SCRIPT_STATE *state, script_arg arg) {
 }
 
 void script_call_args_void(SCRIPT_STATE *state, int arg_count) {
+    // function does not exist (probably)
+    if (!lua_isfunction(state, -1 - arg_count)) {
+        // set back stuff lol
+        lua_settop(state, 0);
+        return;
+    }
+
     script_handle_errors(state, lua_pcall(state, arg_count, 0, 0));
 }
 
@@ -63,8 +70,11 @@ void script_handle_errors(SCRIPT_STATE *state, SCRIPT_ERROR error) {
 }
 
 void script_bind_func(SCRIPT_STATE *state, const char *name, lua_CFunction func, int arg_count) {
+    // don't ask me why we need this for loop
+    // i don't fully understand it lmao
+    // upvalues maybe?
     for (int i = 0; i < arg_count; i++) {
-        lua_pushstring(state, name);
+        lua_pushnil(state);
     }
     
     lua_pushcclosure(state, func, arg_count);
@@ -113,6 +123,18 @@ lua_Number script_table_get_field_number(SCRIPT_STATE *state, int table_index, c
 lua_Number script_table_get_number(SCRIPT_STATE *state, int table_index, int item_index) {
     lua_rawgeti(state, table_index, item_index);
     lua_Number x = lua_tonumber(state, -1);
+    lua_pop(state, 1);
+    return x;
+}
+
+void script_table_set_field_bool(SCRIPT_STATE *state, const char *field, int value, int index) {
+    lua_pushboolean(state, value);
+    lua_setfield(state, index, field);
+}
+
+int script_table_get_field_bool(SCRIPT_STATE *state, int table_index, const char *field) {
+    lua_getfield(state, table_index, field);
+    int x = lua_toboolean(state, -1);
     lua_pop(state, 1);
     return x;
 }

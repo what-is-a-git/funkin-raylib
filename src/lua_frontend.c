@@ -1,5 +1,6 @@
 #include "lua_frontend.h"
 
+#include <string.h>
 #include "raylib.h"
 
 int lua_DrawFPS(lua_State *state) {
@@ -32,7 +33,103 @@ int lua_DrawText(lua_State *state) {
     return 0;
 }
 
-int lua_LoadTexture(lua_State *state) {
+int lua_UnloadTexture(lua_State *state) {
+    if (!lua_istable(state, 1)) {
+        return 0;
+    }
+
+    UnloadTexture((Texture2D) {
+        script_table_get_field_int(state, -1, "id"),
+        script_table_get_field_int(state, -1, "width"), script_table_get_field_int(state, -1, "height"),
+        script_table_get_field_int(state, -1, "mipmaps"), script_table_get_field_int(state, -1, "format")
+    });
+    return 0;
+}
+
+int lua_Sprite_draw(lua_State *state) {
+    if (!lua_istable(state, 1)) {
+        return 0;
+    }
+
+    lua_getfield(state, 1, "texture");
+
+    // texture info //
+    Texture2D texture = {
+        script_table_get_field_int(state, 2, "id"),
+        script_table_get_field_int(state, 2, "width"), script_table_get_field_int(state, 2, "height"),
+        script_table_get_field_int(state, 2, "mipmaps"), script_table_get_field_int(state, 2, "format")
+    };
+
+    lua_pop(state, 1);
+
+    lua_Number x = script_table_get_field_number(state, 1, "x");
+    lua_Number y = script_table_get_field_number(state, 1, "y");
+
+    lua_getfield(state, 1, "scale");
+    lua_Number scale_x = script_table_get_field_number(state, 2, "x");
+    lua_Number scale_y = script_table_get_field_number(state, 2, "y");
+    lua_pop(state, 1);
+
+    lua_Number angle = script_table_get_field_number(state, 1, "angle");
+
+    int flip_x = script_table_get_field_bool(state, 1, "flipX");
+    int flip_y = script_table_get_field_bool(state, 1, "flipY");
+    float width_multi = 1.0 - flip_x * 2.0;
+    float height_multi = 1.0 - flip_y * 2.0;
+
+    if (script_table_get_field_bool(state, 1, "antialiased")) {
+        SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
+    } else {
+        SetTextureFilter(texture, TEXTURE_FILTER_POINT);
+    }
+
+    DrawTexturePro(texture, (Rectangle) {0, 0, texture.width * width_multi, texture.height * height_multi},
+            (Rectangle) {x, y, texture.width * scale_x, texture.height * scale_y}, (Vector2) {texture.width / 2.0, texture.height / 2.0}, angle, WHITE);
+    return 0;
+}
+
+int lua_Sprite_new(lua_State *state) {
+    lua_newtable(state);
+
+    lua_pushnumber(state, 0.0);
+    lua_setfield(state, 2, "x");
+
+    lua_pushnumber(state, 0.0);
+    lua_setfield(state, 2, "y");
+
+    lua_pushnumber(state, 0.0);
+    lua_setfield(state, 2, "angle");
+
+    lua_pushboolean(state, false);
+    lua_setfield(state, 2, "flipX");
+
+    lua_pushboolean(state, false);
+    lua_setfield(state, 2, "flipY");
+
+    lua_pushboolean(state, true);
+    lua_setfield(state, 2, "antialiased");
+
+    script_table_new(state, 2);
+    script_table_set_field_number(state, "x", 1.0, 3);
+    script_table_set_field_number(state, "y", 1.0, 3);
+    lua_setfield(state, 2, "scale");
+
+    script_table_new(state, 5);
+    script_table_set_field_int(state, "id", 0, 3);
+    script_table_set_field_int(state, "width", 0, 3);
+    script_table_set_field_int(state, "height", 0, 3);
+    script_table_set_field_int(state, "mipmaps", 0, 3);
+    script_table_set_field_int(state, "format", 0, 3);
+    lua_setfield(state, 2, "texture");
+
+    lua_pushnil(state);
+    lua_pushcclosure(state, lua_Sprite_draw, 1);
+    lua_setfield(state, 2, "draw");
+
+    return 1;
+}
+
+int frontend_assets_load_texture(lua_State *state) {
     if (!lua_isstring(state, 1)) {
         lua_pushnil(state);
         return 1;
@@ -48,49 +145,44 @@ int lua_LoadTexture(lua_State *state) {
     return 1;
 }
 
-int lua_UnloadTexture(lua_State *state) {
-    if (!lua_istable(state, 1)) {
-        return 0;
+int frontend_assets_path(lua_State *state) {
+    if (!lua_isstring(state, 1)) {
+        lua_pushnil(state);
+        return 1;
     }
 
-    UnloadTexture((Texture2D) {
-        script_table_get_field_int(state, -1, "id"),
-        script_table_get_field_int(state, -1, "width"), script_table_get_field_int(state, -1, "height"),
-        script_table_get_field_int(state, -1, "mipmaps"), script_table_get_field_int(state, -1, "format")
-    });
-    return 0;
-}
-
-int lua_DrawTexture(lua_State *state) {
-    if (!lua_istable(state, 1)) {
-        return 0;
+    const char *input = lua_tostring(state, 1);
+    if (!str_starts_with(input, "assets/")) {
+        lua_pushfstring(state, "assets/%s", input);
+        return 1;
     }
 
-    // texture info //
-    Texture2D texture = {
-        script_table_get_field_int(state, 1, "id"),
-        script_table_get_field_int(state, 1, "width"), script_table_get_field_int(state, 1, "height"),
-        script_table_get_field_int(state, 1, "mipmaps"), script_table_get_field_int(state, 1, "format")
-    };
-
-    // other shit (optional technically) //
-    lua_Number x = luaL_optnumber(state, 2, 0.0);
-    lua_Number y = luaL_optnumber(state, 3, 0.0);
-    lua_Number scale = luaL_optnumber(state, 4, 1.0);
-    lua_Number angle = luaL_optnumber(state, 5, 0.0);
-
-    DrawTexturePro(texture, (Rectangle) {0, 0, texture.width, texture.height}, (Rectangle) {x, y, texture.width * scale, texture.height * scale},
-            (Vector2) {texture.width / 2.0, texture.height / 2.0}, angle, WHITE);
-    return 0;
+    lua_pushstring(state, lua_tostring(state, 1));
+    return 1;
 }
 
 void frontend_bind(SCRIPT_STATE *state) {
-    script_bind_func(state, "loadTexture", lua_LoadTexture, 1);
     script_bind_func(state, "unloadTexture", lua_UnloadTexture, 1);
     script_bind_func(state, "clear", lua_ClearBackground, 3);
-    script_bind_func(state, "drawTexture", lua_DrawTexture, 5);
     script_bind_func(state, "drawText", lua_DrawText, 4);
     script_bind_func(state, "drawFPS", lua_DrawFPS, 2);
 
-    
+    lua_newtable(state);
+
+    lua_pushcclosure(state, lua_Sprite_new, 0);
+    lua_setfield(state, -2, "new");
+
+    lua_setglobal(state, "Sprite");
+
+    lua_newtable(state);
+
+    lua_pushnil(state);
+    lua_pushcclosure(state, frontend_assets_load_texture, 1);
+    lua_setfield(state, -2, "loadTexture");
+
+    lua_pushnil(state);
+    lua_pushcclosure(state, frontend_assets_path, 1);
+    lua_setfield(state, -2, "path");
+
+    lua_setglobal(state, "Assets");
 }

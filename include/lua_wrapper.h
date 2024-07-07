@@ -48,4 +48,7 @@ void script_table_set_field_number(SCRIPT_STATE *state, const char *field, lua_N
 lua_Number script_table_get_field_number(SCRIPT_STATE *state, int table_index, const char *field);
 lua_Number script_table_get_number(SCRIPT_STATE *state, int table_index, int item_index);
 
+void script_table_set_field_bool(SCRIPT_STATE *state, const char *field, int value, int index);
+int script_table_get_field_bool(SCRIPT_STATE *state, int table_index, const char *field);
+
 #endif // !LUA_WRAPPER_H
