@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
     SCRIPT_STATE *script = script_new();
     frontend_bind(script);
-    script_run_file(script, "assets/scenes/original_testing.lua");
+    script_run_file(script, "assets/scenes/game.lua");
     script_call_empty_void(script, "init");
     script_call_empty_void(script, "ready");
 
@@ -39,15 +39,15 @@ int main(int argc, char **argv) {
         EndDrawing();
 
         if (IsKeyPressed(KEY_ONE)) {
-            script = reload_script(script, "assets/scenes/original_testing.lua");
+            script = reload_script(script, "assets/scenes/game.lua");
         }
 
         if (IsKeyPressed(KEY_TWO)) {
-            script = reload_script(script, "assets/scenes/initial_testing.lua");
+            script = reload_script(script, "assets/scenes/original_testing.lua");
         }
 
         if (IsKeyPressed(KEY_THREE)) {
-            script = reload_script(script, "assets/scenes/frontend_testing.lua");
+            script = reload_script(script, "assets/scenes/initial_testing.lua");
         }
     }
 

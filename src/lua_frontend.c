@@ -72,6 +72,11 @@ int lua_Sprite_draw(lua_State *state) {
     lua_Number scale_y = script_table_get_field_number(state, 2, "y");
     lua_pop(state, 1);
 
+    lua_getfield(state, 1, "origin");
+    lua_Number origin_x = script_table_get_field_number(state, 2, "x");
+    lua_Number origin_y = script_table_get_field_number(state, 2, "y");
+    lua_pop(state, 1);
+
     lua_Number angle = script_table_get_field_number(state, 1, "angle");
 
     int flip_x = script_table_get_field_bool(state, 1, "flipX");
@@ -86,7 +91,8 @@ int lua_Sprite_draw(lua_State *state) {
     }
 
     DrawTexturePro(texture, (Rectangle) {0, 0, texture.width * width_multi, texture.height * height_multi},
-            (Rectangle) {x, y, texture.width * scale_x, texture.height * scale_y}, (Vector2) {texture.width / 2.0, texture.height / 2.0}, angle, WHITE);
+            (Rectangle) {x, y, texture.width * scale_x, texture.height * scale_y},
+            (Vector2) {origin_x * texture.width, origin_y * texture.height}, angle, WHITE);
     return 0;
 }
 
@@ -110,6 +116,11 @@ int lua_Sprite_new(lua_State *state) {
 
     lua_pushboolean(state, true);
     lua_setfield(state, 2, "antialiased");
+
+    script_table_new(state, 2);
+    script_table_set_field_number(state, "x", 0.5, 3);
+    script_table_set_field_number(state, "y", 0.5, 3);
+    lua_setfield(state, 2, "origin");
 
     script_table_new(state, 2);
     script_table_set_field_number(state, "x", 1.0, 3);
