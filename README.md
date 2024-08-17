@@ -2,4 +2,4 @@
 
 hello
 
-![phighting babies](assets/peak.png)
+![phighting babies](assets/images/peak.png)
