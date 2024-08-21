@@ -24,5 +24,5 @@ function draw()
 end
 
 function free()
-    
+    note:free()
 end
