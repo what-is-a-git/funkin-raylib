@@ -27,7 +27,7 @@ void script_call_empty_void(SCRIPT_STATE *state, const char *func) {
 }
 
 SCRIPT_ERROR script_init_args(SCRIPT_STATE *state, const char *func) {
-    lua_getglobal(state, func);
+    return lua_getglobal(state, func);
 }
 
 void script_push_arg(SCRIPT_STATE *state, script_arg arg) {

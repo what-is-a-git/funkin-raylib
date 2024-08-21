@@ -1,6 +1,8 @@
 #include "lua_frontend.h"
 
 #include <string.h>
+#include "str.h"
+
 #include "raylib.h"
 
 int lua_DrawFPS(lua_State *state) {

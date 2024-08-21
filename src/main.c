@@ -16,7 +16,7 @@ SCRIPT_STATE *reload_script(SCRIPT_STATE *previous, const char *path) {
     return script;
 }
 
-int main(int argc, char **argv) {   
+int main(int argc, char **argv) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1280, 720, "Friday Night Funkin'");
 

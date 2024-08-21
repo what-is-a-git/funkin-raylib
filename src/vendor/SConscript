@@ -1,4 +1,0 @@
-Import('env')
-Import('build_target')
-
-SConscript('lua/SConscript')

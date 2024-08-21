@@ -2,6 +2,7 @@
 #define LUA_WRAPPER_H
 
 #include "lua.h"
+#include "lualib.h"
 #include "lauxlib.h"
 
 typedef enum {
